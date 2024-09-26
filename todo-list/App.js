@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, FlatList, TextInput, TouchableOpacity } from 'react-native';
-import { Icon, Input, ButtonGroup } from 'react-native-elements';
+import { View } from 'react-native';
+import { Input, ButtonGroup } from 'react-native-elements';
+import { styles } from './styles';  // Import styles
+import TaskList from './TaskList';  // Import TaskList component
+import AddTaskInput from './AddTaskInput';  // Import AddTaskInput component
 
 export default function App() {
   const [todoList, setTodoList] = useState([]);
@@ -11,7 +14,7 @@ export default function App() {
   const [currentTaskId, setCurrentTaskId] = useState(null);
   const [viewFilter, setViewFilter] = useState(0); // 0 - All, 1 - Ongoing, 2 - Completed, 3 - Deleted
 
-  // Add new task
+  // Functions for task operations: addTask, editTask, deleteTask, restoreTask, toggleComplete
   const addTask = () => {
     if (!newTask) return;
     if (isEditing) {
@@ -24,14 +27,12 @@ export default function App() {
     setNewTask('');
   };
 
-  // Edit task
   const editTask = (id, task) => {
     setIsEditing(true);
     setNewTask(task);
     setCurrentTaskId(id);
   };
 
-  // Delete task
   const deleteTask = id => {
     const taskToDelete = todoList.find(item => item.id === id);
     setTodoList(todoList.filter(item => item.id !== id));
@@ -40,7 +41,6 @@ export default function App() {
     }
   };
 
-  // Restore task
   const restoreTask = id => {
     const taskToRestore = deletedList.find(item => item.id === id);
     setDeletedList(deletedList.filter(item => item.id !== id));
@@ -49,7 +49,6 @@ export default function App() {
     }
   };
 
-  // Mark as completed
   const toggleComplete = id => {
     setTodoList(todoList.map(item => item.id === id ? { ...item, completed: !item.completed } : item));
   };
@@ -71,7 +70,7 @@ export default function App() {
         placeholder="Search..."
         value={searchText}
         onChangeText={setSearchText}
-        leftIcon={<Icon name="search" type="font-awesome" />}
+        leftIcon={{ name: 'search', type: 'font-awesome' }}
         containerStyle={styles.searchBar}
       />
 
@@ -84,109 +83,22 @@ export default function App() {
       />
 
       {/* Task List */}
-      <FlatList
-        data={filteredList}
-        keyExtractor={item => item.id}
-        renderItem={({ item }) => (
-          <View style={styles.listItem}>
-            {viewFilter === 3 ? ( // Render for Deleted List
-              <>
-                <Text style={styles.taskText}>{item.task}</Text>
-                <TouchableOpacity onPress={() => restoreTask(item.id)}>
-                  <Icon name="undo" type="font-awesome" size={18} color="blue" />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => editTask(item.id, item.task)} style={styles.iconSpacing}>
-                  <Icon name="edit" type="font-awesome" size={18} color="green" />
-                </TouchableOpacity>
-              </>
-            ) : ( // Render for Active List
-              <>
-                <TouchableOpacity onPress={() => toggleComplete(item.id)}>
-                  <Icon
-                    name={item.completed ? "check-circle" : "circle"}
-                    type="font-awesome"
-                    color={item.completed ? "green" : "gray"}
-                  />
-                </TouchableOpacity>
-                <Text style={[styles.taskText, item.completed && styles.completedTask]}>{item.task}</Text>
-                <View style={styles.icons}>
-                  <TouchableOpacity onPress={() => editTask(item.id, item.task)}>
-                    <Icon name="edit" type="font-awesome" size={18} color="blue" />
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={() => deleteTask(item.id)}>
-                    <Icon name="trash" type="font-awesome" size={18} color="red" />
-                  </TouchableOpacity>
-                </View>
-              </>
-            )}
-          </View>
-        )}
+      <TaskList
+        tasks={filteredList}
+        viewFilter={viewFilter}
+        toggleComplete={toggleComplete}
+        editTask={editTask}
+        deleteTask={deleteTask}
+        restoreTask={restoreTask}
       />
 
-      {/* Input field to add/edit tasks */}
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.input}
-          placeholder="Add new task..."
-          value={newTask}
-          onChangeText={setNewTask}
-        />
-        <TouchableOpacity onPress={addTask}>
-          <Icon name={isEditing ? "save" : "plus-circle"} type="font-awesome" size={30} color="green" />
-        </TouchableOpacity>
-      </View>
+      {/* Add Task Input */}
+      <AddTaskInput
+        newTask={newTask}
+        setNewTask={setNewTask}
+        addTask={addTask}
+        isEditing={isEditing}
+      />
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: '#fff',
-  },
-  searchBar: {
-    marginBottom: 20,
-  },
-  buttonGroup: {
-    marginBottom: 20,
-  },
-  listItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
-  },
-  taskText: {
-    fontSize: 18,
-    flex: 1,
-    marginLeft: 10,
-  },
-  completedTask: {
-    textDecorationLine: 'line-through',
-    color: 'gray',
-  },
-  icons: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: 60,
-  },
-  iconSpacing: {
-    marginLeft: 10, // Add margin to create space between icons
-  },
-  inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 20,
-  },
-  input: {
-    flex: 1,
-    borderColor: '#ccc',
-    borderWidth: 1,
-    padding: 10,
-    marginRight: 10,
-    borderRadius: 5,
-  },
-});
