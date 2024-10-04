@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { View } from 'react-native';
 import { Input, ButtonGroup } from 'react-native-elements';
 import { styles } from './styles';  // Import styles
-import TaskList from './TaskList';  // Import TaskList component
-import AddTaskInput from './AddTaskInput';  // Import AddTaskInput component
+import TaskList from './components/TaskList';
+import AddTaskInput from './components/AddTaskInput';  // Import AddTaskInput component
 
 export default function App() {
   const [todoList, setTodoList] = useState([]);

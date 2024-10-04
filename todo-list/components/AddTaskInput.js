@@ -1,7 +1,8 @@
 import React from 'react';
 import { View, TextInput, TouchableOpacity } from 'react-native';
 import { Icon } from 'react-native-elements';
-import { styles } from './styles';  // Import styles
+import { styles } from '../styles';
+
 
 export default function AddTaskInput({ newTask, setNewTask, addTask, isEditing }) {
   return (

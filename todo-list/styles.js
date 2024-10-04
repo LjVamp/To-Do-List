@@ -32,7 +32,7 @@ export const styles = StyleSheet.create({
   icons: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    width: 60,
+    width: 50,
   },
   iconSpacing: {
     marginLeft: 10,

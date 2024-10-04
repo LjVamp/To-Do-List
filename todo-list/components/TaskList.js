@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, FlatList } from 'react-native';
 import { Icon } from 'react-native-elements';
-import { styles } from './styles';  // Import styles
+import { styles } from '../styles'
 
 export default function TaskList({ tasks, viewFilter, toggleComplete, editTask, deleteTask, restoreTask }) {
   return (
@@ -28,8 +28,8 @@ export default function TaskList({ tasks, viewFilter, toggleComplete, editTask, 
               </TouchableOpacity>
               <Text style={[styles.taskText, item.completed && styles.completedTask]}>{item.task}</Text>
               <View style={styles.icons}>
-                <TouchableOpacity onPress={() => editTask(item.id)}>
-                  <Icon name="edit" type="font-awesome" size={18} color="blue" />
+              <TouchableOpacity onPress={() => editTask(item.id, item.task)}>
+                <Icon name="edit" type="font-awesome" size={18} color="blue" />
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => deleteTask(item.id)}>
                   <Icon name="trash" type="font-awesome" size={18} color="red" />
