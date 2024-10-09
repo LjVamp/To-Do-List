@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { View } from 'react-native';
-import { Input, ButtonGroup } from 'react-native-elements';
-import { styles } from './styles';  // Import styles
+import { View, Text, TouchableOpacity } from 'react-native';
+import { Input } from 'react-native-elements';
+import { styles } from './styles';
 import TaskList from './components/TaskList';
-import AddTaskInput from './components/AddTaskInput';  // Import AddTaskInput component
+import AddTaskInput from './components/AddTaskInput';
 
 export default function App() {
   const [todoList, setTodoList] = useState([]);
@@ -12,9 +12,8 @@ export default function App() {
   const [newTask, setNewTask] = useState('');
   const [isEditing, setIsEditing] = useState(false);
   const [currentTaskId, setCurrentTaskId] = useState(null);
-  const [viewFilter, setViewFilter] = useState(0); // 0 - All, 1 - Ongoing, 2 - Completed, 3 - Deleted
+  const [viewFilter, setViewFilter] = useState(0);
 
-  // Functions for task operations: addTask, editTask, deleteTask, restoreTask, toggleComplete
   const addTask = () => {
     if (!newTask) return;
     if (isEditing) {
@@ -53,19 +52,17 @@ export default function App() {
     setTodoList(todoList.map(item => item.id === id ? { ...item, completed: !item.completed } : item));
   };
 
-  // Filtered list based on search and view filter
   const filteredList = (() => {
     const activeList = todoList.filter(item => item.task.toLowerCase().includes(searchText.toLowerCase()));
-    
-    if (viewFilter === 0) return activeList; // All tasks
-    if (viewFilter === 1) return activeList.filter(item => !item.completed); // Ongoing tasks
-    if (viewFilter === 2) return activeList.filter(item => item.completed);  // Completed tasks
-    if (viewFilter === 3) return deletedList.filter(item => item.task.toLowerCase().includes(searchText.toLowerCase())); // Deleted tasks
+    if (viewFilter === 0) return activeList;
+    if (viewFilter === 1) return activeList.filter(item => !item.completed);
+    if (viewFilter === 2) return activeList.filter(item => item.completed);
+    if (viewFilter === 3) return deletedList.filter(item => item.task.toLowerCase().includes(searchText.toLowerCase()));
   })();
 
   return (
     <View style={styles.container}>
-      {/* Search Bar */}
+      <Text style={styles.title}>TO-DO LIST</Text>
       <Input
         placeholder="Search..."
         value={searchText}
@@ -73,16 +70,25 @@ export default function App() {
         leftIcon={{ name: 'search', type: 'font-awesome' }}
         containerStyle={styles.searchBar}
       />
+      
+      {/* Updated ButtonGroup */}
+      <View style={styles.buttonGroup}>
+        {['All', 'Ongoing', 'Completed', 'Deleted'].map((buttonTitle, index) => (
+          <TouchableOpacity
+            key={index}
+            onPress={() => setViewFilter(index)}
+            style={[
+              styles.button,
+              viewFilter === index ? styles.buttonSelected : null
+            ]}
+          >
+            <Text style={viewFilter === index ? styles.buttonTextSelected : styles.buttonText}>
+              {buttonTitle}
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </View>
 
-      {/* View Filter Buttons */}
-      <ButtonGroup
-        buttons={['All', 'Ongoing', 'Completed', 'Deleted']}
-        selectedIndex={viewFilter}
-        onPress={setViewFilter}
-        containerStyle={styles.buttonGroup}
-      />
-
-      {/* Task List */}
       <TaskList
         tasks={filteredList}
         viewFilter={viewFilter}
@@ -92,7 +98,6 @@ export default function App() {
         restoreTask={restoreTask}
       />
 
-      {/* Add Task Input */}
       <AddTaskInput
         newTask={newTask}
         setNewTask={setNewTask}

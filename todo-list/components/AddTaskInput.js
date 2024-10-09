@@ -16,7 +16,7 @@ export default function AddTaskInput({ newTask, setNewTask, addTask, isEditing }
         returnKeyType="done"
       />
       <TouchableOpacity onPress={addTask}>
-        <Icon name={isEditing ? "save" : "plus-circle"} type="font-awesome" size={30} color="green" />
+        <Icon name={isEditing ? "save" : "plus-circle"} type="font-awesome" size={30} color="#5F6F65" />
       </TouchableOpacity>
     </View>
   );
